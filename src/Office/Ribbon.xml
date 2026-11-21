@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2006/01/customui">
+  <ribbon>
+    <tabs>
+      <tab idMso="TabAddIns">
+        <group id="grpYangiAlifbo" label="Yangi Alifbo">
+          <button id="btnCyrToLat" label="Kirill → Lotin" size="large" imageMso="ChangeCase"
+                  screentip="Kirill yozuvini yangi lotin alifbosiga ögiriş"
+                  supertip="Belgilangan matn yoki (heç narsa belgilanmagan bölsa) butun hujjat ögiriladi."
+                  onAction="OnButton"/>
+          <button id="btnLatToCyr" label="Lotin → Kirill" size="large" imageMso="ChangeCase"
+                  screentip="Lotin yozuvini (eski yoki yangi) kirillga ögiriş"
+                  supertip="Belgilangan matn yoki (heç narsa belgilanmagan bölsa) butun hujjat ögiriladi."
+                  onAction="OnButton"/>
+          <button id="btnOldToNew" label="Eski → Yangi lotin" size="large" imageMso="Spelling"
+                  screentip="Eski lotin (O', G', Sh, Ch) ni yangi alifboga (Ö, Ğ, Ş, Ç) ögiriş"
+                  supertip="Belgilangan matn yoki (heç narsa belgilanmagan bölsa) butun hujjat ögiriladi."
+                  onAction="OnButton"/>
+          <button id="btnAbout" label="Haqida" size="large" imageMso="Help" onAction="OnButton"/>
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>

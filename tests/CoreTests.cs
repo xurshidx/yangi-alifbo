@@ -130,6 +130,12 @@ namespace YangiAlifbo.Tests
             Conv(l, "Salom, dunyo!", "Салом, дунё!");
             Conv(l, "Ўзбек", "Ўзбек");
 
+            // Task 6 yordamchisi: Word maydon kodlari (\u0013 kod \u0014 natija \u0015) o'zgarmaydi
+            string fld = "сайт \u0013 HYPERLINK \"https://dellcom.uz\" \u0014сайт\u0015 ва";
+            Eq("45|2|va;39|4|sayt;0|4|sayt", Join(Converter.ExcludeFieldCodes(fld, Converter.PlanEdits(fld, Direction.CyrToLat))), "field_codes_cyr");
+            Eq("26|2|ва;20|4|сайт;0|4|сайт", Join(Converter.ExcludeFieldCodes("sayt \u0013 HYPERLINK x \u0014sayt\u0015 va", Converter.PlanEdits("sayt \u0013 HYPERLINK x \u0014sayt\u0015 va", Direction.LatToCyr))), "field_codes_lat");
+            Eq("", Join(Converter.ExcludeFieldCodes("\u0013 PAGE \u0013 SET a \u0014\u0015 \u0014", Converter.PlanEdits("\u0013 PAGE \u0013 SET a \u0014\u0015 \u0014", Direction.LatToCyr))), "field_codes_nested");
+
             Console.WriteLine("OK: " + passes + ", FAIL: " + fails);
             return fails == 0 ? 0 : 1;
         }
