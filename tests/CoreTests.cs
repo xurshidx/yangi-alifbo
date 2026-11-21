@@ -69,6 +69,35 @@ namespace YangiAlifbo.Tests
             Conv(o, "Men o'zbekman, sen-chi?", "Men özbekman, sen-çi?");
             Conv(o, "Özbekiston şahar", "Özbekiston şahar");
 
+            // Task 3: kirill -> yangi lotin
+            var k = Direction.CyrToLat;
+            Conv(k, "Ўзбекистон", "Özbekiston");
+            Conv(k, "шаҳар", "şahar");
+            Conv(k, "чой", "çoy");
+            Conv(k, "ғишт", "ğişt");
+            Conv(k, "қўл", "qöl");
+            Conv(k, "хат", "xat");
+            Conv(k, "ҳа", "ha");
+            Conv(k, "Ер", "Yer");
+            Conv(k, "поезд", "poyezd");
+            Conv(k, "мева", "meva");
+            Conv(k, "съезд", "syezd");
+            Conv(k, "цирк", "sirk");
+            Conv(k, "лицей", "litsey");
+            Conv(k, "маъно", "maʼno");
+            Conv(k, "актёр", "aktyor");
+            Conv(k, "компьютер", "kompyuter");
+            Conv(k, "Юсуф", "Yusuf");
+            Conv(k, "ЯНГИ", "YANGI");
+            Conv(k, "ШАҲАР", "ŞAHAR");
+            Conv(k, "ЁШЛИК", "YOŞLIK");
+            Conv(k, "Ёшлик", "Yoşlik");
+            Conv(k, "Я", "Ya");
+            Conv(k, "Салом, дунё!", "Salom, dunyo!");
+            Conv(k, "Windows 10", "Windows 10");
+            Conv(k, "щётка", "şyotka");
+            Conv(k, "эълон", "eʼlon");
+
             Console.WriteLine("OK: " + passes + ", FAIL: " + fails);
             return fails == 0 ? 0 : 1;
         }
