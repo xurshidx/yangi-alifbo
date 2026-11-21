@@ -53,8 +53,8 @@ namespace YangiAlifbo.Office
         int ConvertRange(dynamic range, int start, int end, Direction d)
         {
             int count = 0;
-            // Paragraflar ro'yxatini oldindan olamiz: o'zgartirishlar paragraf chegaralarini siljitadi,
-            // shuning uchun oxirgisidan boshlaymiz.
+            // Paragraflar ro'yxatini oldindan olamiz va oxiridan boshlaymiz:
+            // o'zgartirishlar keyingi pozitsiyalarni siljitadi, oldingilarini emas.
             var paras = new List<dynamic>();
             foreach (dynamic p in range.Paragraphs) paras.Add(p);
             for (int i = paras.Count - 1; i >= 0; i--)
@@ -63,22 +63,81 @@ namespace YangiAlifbo.Office
                 int ps = Math.Max((int)pr.Start, start);
                 int pe = Math.Min((int)pr.End, end);
                 if (pe <= ps) continue;
-                dynamic r = pr.Duplicate;
-                r.SetRange(ps, pe);
-                r.TextRetrievalMode.IncludeFieldCodes = true;
-                r.TextRetrievalMode.IncludeHiddenText = true;
-                string text = (string)r.Text;
-                var edits = Converter.ExcludeFieldCodes(text, Converter.PlanEdits(text, d));
-                foreach (var e in edits)
+                var fields = new List<int[]>();
+                foreach (dynamic f in pr.Fields)
                 {
-                    dynamic w = pr.Duplicate;
-                    w.SetRange(ps + e.Start, ps + e.Start + e.Length);
-                    w.TextRetrievalMode.IncludeFieldCodes = true;
-                    w.TextRetrievalMode.IncludeHiddenText = true;
-                    if ((string)w.Text != text.Substring(e.Start, e.Length)) { Skipped++; continue; }
-                    w.Text = e.NewText;
-                    count++;
+                    try
+                    {
+                        dynamic code = f.Code, res = f.Result;
+                        fields.Add(new[] { (int)code.Start - 1, (int)res.End + 1, (int)res.Start, (int)res.End });
+                    }
+                    catch { }
                 }
+                count += ConvertSpan(pr, ps, pe, TopLevel(fields), fields, d);
+            }
+            return count;
+        }
+
+        /// <summary>Boshqa maydon ichida bo'lmagan maydonlar, boshlanishi bo'yicha kamayish tartibida.</summary>
+        static List<int[]> TopLevel(List<int[]> all)
+        {
+            var top = new List<int[]>();
+            foreach (var f in all)
+            {
+                bool nested = false;
+                foreach (var g in all)
+                    if (g != f && g[0] <= f[0] && f[1] <= g[1] && !(g[0] == f[0] && g[1] == f[1])) { nested = true; break; }
+                if (!nested) top.Add(f);
+            }
+            top.Sort(delegate(int[] x, int[] y) { return y[0].CompareTo(x[0]); });
+            return top;
+        }
+
+        /// <summary>
+        /// [a,b) oralig'ini maydonlar atrofida bo'laklab o'giradi: maydondan tashqaridagi matn va
+        /// maydon natijasi (hyperlink matni) o'giriladi, maydon kodi o'zgarmaydi.
+        /// Word 2007 maydonli paragraf matnini pozitsiyalar bilan 1:1 bermaydi, shuning uchun bo'laklash shart.
+        /// </summary>
+        int ConvertSpan(dynamic baseRange, int a, int b, List<int[]> top, List<int[]> all, Direction d)
+        {
+            int count = 0;
+            int cursor = b;
+            foreach (var f in top) // kamayish tartibida
+            {
+                if (f[1] <= a || f[0] >= cursor) continue;
+                if (f[1] < cursor) count += ConvertPlain(baseRange, f[1], cursor, d);
+                if (f[2] >= a && f[3] <= b && f[3] > f[2])
+                {
+                    var inner = new List<int[]>();
+                    foreach (var g in all)
+                        if (g[0] >= f[2] && g[1] <= f[3]) inner.Add(g);
+                    count += ConvertSpan(baseRange, f[2], f[3], TopLevel(inner), inner, d);
+                }
+                cursor = Math.Min(cursor, f[0]);
+            }
+            if (cursor > a) count += ConvertPlain(baseRange, a, cursor, d);
+            return count;
+        }
+
+        /// <summary>Maydonsiz oraliq: matn pozitsiyalar bilan 1:1 mos.</summary>
+        int ConvertPlain(dynamic baseRange, int a, int b, Direction d)
+        {
+            if (b <= a) return 0;
+            dynamic r = baseRange.Duplicate;
+            r.SetRange(a, b);
+            r.TextRetrievalMode.IncludeFieldCodes = false;
+            r.TextRetrievalMode.IncludeHiddenText = true;
+            string text = (string)r.Text;
+            int count = 0;
+            foreach (var e in Converter.ExcludeFieldCodes(text, Converter.PlanEdits(text, d)))
+            {
+                dynamic w = baseRange.Duplicate;
+                w.SetRange(a + e.Start, a + e.Start + e.Length);
+                w.TextRetrievalMode.IncludeFieldCodes = false;
+                w.TextRetrievalMode.IncludeHiddenText = true;
+                if ((string)w.Text != text.Substring(e.Start, e.Length)) { Skipped++; continue; }
+                w.Text = e.NewText;
+                count++;
             }
             return count;
         }

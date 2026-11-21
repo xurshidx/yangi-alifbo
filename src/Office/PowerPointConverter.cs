@@ -40,17 +40,21 @@ namespace YangiAlifbo.Office
             return count;
         }
 
-        static bool True(object o) { return System.Convert.ToInt32(o) != 0; }
+        /// <summary>Xossani xavfsiz o'qish: PowerPoint 2007 da jadval katagi shaklining Type xossasi NotImplemented beradi.</summary>
+        static int SafeInt(Func<object> get)
+        {
+            try { return System.Convert.ToInt32(get()); } catch { return 0; }
+        }
 
         int ConvertShape(dynamic sh, Direction d)
         {
             int count = 0;
-            if ((int)sh.Type == msoGroup)
+            if (SafeInt(delegate { return sh.Type; }) == msoGroup)
             {
                 foreach (dynamic item in sh.GroupItems) count += ConvertShape(item, d);
                 return count;
             }
-            if (True(sh.HasTable))
+            if (SafeInt(delegate { return sh.HasTable; }) != 0)
             {
                 dynamic t = sh.Table;
                 for (int r = 1; r <= (int)t.Rows.Count; r++)
@@ -58,7 +62,7 @@ namespace YangiAlifbo.Office
                         count += ConvertShape(t.Cell(r, c).Shape, d);
                 return count;
             }
-            if (True(sh.HasTextFrame) && True(sh.TextFrame.HasText))
+            if (SafeInt(delegate { return sh.HasTextFrame; }) != 0 && SafeInt(delegate { return sh.TextFrame.HasText; }) != 0)
                 count += ConvertTextRange(sh.TextFrame.TextRange, d);
             return count;
         }

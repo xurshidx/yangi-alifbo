@@ -16,6 +16,12 @@ Matn belgilangan bo'lsa — faqat u o'giriladi. Hech narsa belgilanmagan bo'lsa 
 Word'da Ctrl+Z bilan bekor qilsa bo'ladi. Excel'da bekor qilib bo'lmaydi, shuning uchun
 butun varaqni o'girishdan oldin tasdiq so'raladi.
 
+MUHIM
+Office «Administrator nomidan» ishga tushirilsa, Windows foydalanuvchi darajasidagi
+qo'shimchalarni yuklamaydi. Word/Excel/PowerPoint'ni oddiy usulda oching.
+Agar qo'shimcha chiqmasa: YangiAlifbo.Setup.exe ni qayta ishga tushiring
+(u Office o'chirib qo'ygan qo'shimchani qayta yoqadi).
+
 O'CHIRISH
 Buyruq satrida: YangiAlifbo.Setup.exe /uninstall
 
