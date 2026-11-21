@@ -47,6 +47,28 @@ namespace YangiAlifbo.Tests
             Eq("7|4|dunyo;0|5|Salom", Join(Converter.PlanEdits("Салом, дунё!", Direction.CyrToLat)), "plan_desc_order");
             Eq("", Join(Converter.PlanEdits("123 ...", Direction.CyrToLat)), "plan_no_words");
 
+            // Task 2: eski lotin -> yangi lotin
+            var o = Direction.OldToNew;
+            Conv(o, "O'zbekiston", "Özbekiston");
+            Conv(o, "g'isht", "ğişt");
+            Conv(o, "Oʻgʻil", "Öğil");
+            Conv(o, "o‘g’il", "öğil");
+            Conv(o, "o`rta", "örta");
+            Conv(o, "oʼq", "öq");
+            Conv(o, "G'ALABA", "ĞALABA");
+            Conv(o, "shahar", "şahar");
+            Conv(o, "Shahar", "Şahar");
+            Conv(o, "SHAHAR", "ŞAHAR");
+            Conv(o, "choy", "çoy");
+            Conv(o, "CHOY", "ÇOY");
+            Conv(o, "ma'no", "maʼno");
+            Conv(o, "Is'hoq", "Isʼhoq");
+            Conv(o, "tong", "tong");
+            Conv(o, "Microsoft", "Microsoft");
+            Conv(o, "Windows", "Windows");
+            Conv(o, "Men o'zbekman, sen-chi?", "Men özbekman, sen-çi?");
+            Conv(o, "Özbekiston şahar", "Özbekiston şahar");
+
             Console.WriteLine("OK: " + passes + ", FAIL: " + fails);
             return fails == 0 ? 0 : 1;
         }
