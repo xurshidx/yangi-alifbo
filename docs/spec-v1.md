@@ -81,5 +81,5 @@ Word/Excel/PowerPoint `Addins\YangiAlifbo.Connect` kalitlarini yozadi (LoadBehav
 `/uninstall` hammasini o'chiradi. Talab: .NET Framework 4.x (Windows 10 da bor).
 
 ## 6. Ochiq savollar
-- Is'hoq tipidagi so'zlar yangi alifboda "Ishoq" bo'ladimi yoki "Isʼhoq"? (hozircha Isʼhoq)
+- ~~Is'hoq tipidagi so'zlar~~ — HAL QILINDI (2026-11-22): **Isʼhoq** (ajratuvchi tutuq saqlanadi)
 - Istisnolar lug'atini kengaytirish (foydalanuvchi qo'shishi mumkin bo'lsinmi — v3)
