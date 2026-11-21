@@ -98,6 +98,38 @@ namespace YangiAlifbo.Tests
             Conv(k, "щётка", "şyotka");
             Conv(k, "эълон", "eʼlon");
 
+            // Task 4: lotin -> kirill
+            var l = Direction.LatToCyr;
+            Conv(l, "Özbekiston", "Ўзбекистон");
+            Conv(l, "O'zbekiston", "Ўзбекистон");
+            Conv(l, "Oʻzbekiston", "Ўзбекистон");
+            Conv(l, "şahar", "шаҳар");
+            Conv(l, "shahar", "шаҳар");
+            Conv(l, "SHAHAR", "ШАҲАР");
+            Conv(l, "ŞAHAR", "ШАҲАР");
+            Conv(l, "çoy", "чой");
+            Conv(l, "choy", "чой");
+            Conv(l, "ğişt", "ғишт");
+            Conv(l, "g'isht", "ғишт");
+            Conv(l, "ekran", "экран");
+            Conv(l, "meva", "мева");
+            Conv(l, "yer", "ер");
+            Conv(l, "poyezd", "поезд");
+            Conv(l, "yoşlik", "ёшлик");
+            Conv(l, "YOŞLIK", "ЁШЛИК");
+            Conv(l, "Yusuf", "Юсуф");
+            Conv(l, "maʼno", "маъно");
+            Conv(l, "ma'no", "маъно");
+            Conv(l, "Is'hoq", "Исҳоқ");
+            Conv(l, "Isʼhoq", "Исҳоқ");
+            Conv(l, "ketsa", "кетса");
+            Conv(l, "litseyda", "лицейда");
+            Conv(l, "Kompyuter", "Компьютер");
+            Conv(l, "KONSERT", "КОНЦЕРТ");
+            Conv(l, "Microsoft", "Microsoft");
+            Conv(l, "Salom, dunyo!", "Салом, дунё!");
+            Conv(l, "Ўзбек", "Ўзбек");
+
             Console.WriteLine("OK: " + passes + ", FAIL: " + fails);
             return fails == 0 ? 0 : 1;
         }
