@@ -16,6 +16,8 @@
                   screentip="Eski lotin (O', G', Sh, Ch) ni yangi alifboga (Ö, Ğ, Ş, Ç) ögiriş"
                   supertip="Belgilangan matn yoki (heç narsa belgilanmagan bölsa) butun hujjat ögiriladi."
                   onAction="OnButton"/>
+          <button id="btnLicense" label="Litsenziya" size="large" imageMso="AdpPrimaryKey"
+                  screentip="Litsenziya holati va kalitni faollaştiriş" onAction="OnButton"/>
           <button id="btnAbout" label="Haqida" size="large" imageMso="Help" onAction="OnButton"/>
         </group>
       </tab>

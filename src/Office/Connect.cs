@@ -21,6 +21,8 @@ namespace YangiAlifbo.Office
     {
         public const string Title = "Yangi Alifbo";
         object app;
+        static LicenseService lic;
+        internal static LicenseService Lic { get { return lic ?? (lic = new LicenseService()); } }
 
         public Connect() { Log("Connect yaratildi"); }
 
@@ -41,6 +43,7 @@ namespace YangiAlifbo.Office
         {
             app = application;
             Log("OnConnection mode=" + connectMode);
+            try { Lic.SyncInBackground(); } catch (Exception e) { Log("Litsenziya: " + e.Message); }
         }
         public void OnDisconnection(int removeMode, ref Array custom) { app = null; }
         public void OnAddInsUpdate(ref Array custom) { }
@@ -87,6 +90,18 @@ namespace YangiAlifbo.Office
                         "\nYangi özbek lotin alifbosi (ÖRQ–1184) uçun qöşimça.\n\nDELL COMPUTER SERVIZ",
                         Title, MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
+                }
+                if (id == "btnLicense")
+                {
+                    using (var f = new LicenseForm(Lic, null)) f.ShowDialog();
+                    return;
+                }
+                if (!Lic.Allowed)
+                {
+                    int days;
+                    string why = Lic.State(out days) == LicState.Revoked ? "Litsenziya bekor qilingan" : "Bepul sinov muddati tugadi";
+                    using (var f = new LicenseForm(Lic, why)) f.ShowDialog();
+                    if (!Lic.Allowed) return;
                 }
                 Direction d;
                 if (id == "btnCyrToLat") d = Direction.CyrToLat;

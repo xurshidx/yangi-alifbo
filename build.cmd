@@ -6,7 +6,7 @@ rem              build.cmd smoke      - yig'ish + Word/Excel/PowerPoint avtomati
 rem              build.cmd release    - yig'ish + testlar + out\YangiAlifbo_v1.0.0.zip
 setlocal
 cd /d "%~dp0"
-set VER=1.0.1
+set VER=2.0.0
 set CSC=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe
 set FW=%WINDIR%\Microsoft.NET\Framework\v4.0.30319
 if not exist "%CSC%" (
@@ -14,16 +14,17 @@ if not exist "%CSC%" (
   exit /b 1
 )
 set OPTS=/nologo /codepage:65001 /langversion:5 /platform:anycpu /optimize+
-set REFS=/r:"%FW%\System.Core.dll" /r:"%FW%\Microsoft.CSharp.dll" /r:"%FW%\System.Windows.Forms.dll"
+set REFS=/r:"%FW%\System.Core.dll" /r:"%FW%\Microsoft.CSharp.dll" /r:"%FW%\System.Windows.Forms.dll" /r:"%FW%\System.Drawing.dll"
 if not exist out mkdir out
 
 "%CSC%" %OPTS% /target:library /out:out\YangiAlifbo.Core.dll src\Core\*.cs || exit /b 1
 "%CSC%" %OPTS% /target:exe /r:out\YangiAlifbo.Core.dll /out:out\CoreTests.exe tests\CoreTests.cs || exit /b 1
 rem Office DLL yadro kodini o'z ichiga oladi: COM CodeBase orqali yuklanganda yonidagi
 rem bog'liqliklar (YangiAlifbo.Core.dll) topilmaydi (80070002), shuning uchun bitta DLL.
-"%CSC%" %OPTS% /target:library %REFS% /resource:src\Office\Ribbon.xml,YangiAlifbo.Office.Ribbon.xml /out:out\YangiAlifbo.Office.dll src\Core\*.cs src\Office\*.cs || exit /b 1
+"%CSC%" %OPTS% /target:library %REFS% /resource:src\Office\Ribbon.xml,YangiAlifbo.Office.Ribbon.xml /resource:keys\alifbo_pub.xml,YangiAlifbo.Office.alifbo_pub.xml /out:out\YangiAlifbo.Office.dll src\Core\*.cs src\Office\*.cs || exit /b 1
 "%CSC%" %OPTS% /target:exe /win32manifest:src\Setup\app.manifest /out:out\YangiAlifbo.Setup.exe src\Setup\Setup.cs || exit /b 1
 "%CSC%" %OPTS% /target:exe %REFS% /r:out\YangiAlifbo.Office.dll /out:out\OfficeSmoke.exe tests\OfficeSmoke.cs || exit /b 1
+"%CSC%" %OPTS% /target:exe %REFS% /r:out\YangiAlifbo.Office.dll /out:out\LicenseSmoke.exe tests\LicenseSmoke.cs || exit /b 1
 
 if /i "%1"=="test" (
   out\CoreTests.exe || exit /b 1
