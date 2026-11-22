@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Yangi Alifbo — MSI o'rnatuvchi (WiX 3.14). Yig'ish: build.cmd msi
+  Fayllar Program Files\YangiAlifbo ga qo'yiladi; COM, Office qo'shimchasi (barcha foydalanuvchilar) va avtoyuklash
+  ro'yxati YangiAlifbo.Setup.exe /msi-register bilan yoziladi (32-bit MSI 64-bit registrga o'zi yoza olmaydi,
+  64-bit Office uchun esa ikkala ko'rinish kerak). UpgradeCode HECH QACHON o'zgartirilmaydi.
+-->
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Product Id="*" Name="Yangi Alifbo" Language="1049" Codepage="1251" Version="$(var.Version)"
+           Manufacturer="DELL COMPUTER SERVIZ" UpgradeCode="{6A3F2D18-5B7C-4E21-9C4A-0B8E7D3F1A62}">
+    <Package InstallerVersion="300" Compressed="yes" InstallScope="perMachine" Platform="x86"
+             Description="Yangi Alifbo $(var.Version)" Comments="Kirill / lotin / yangi alifbo" Manufacturer="DELL COMPUTER SERVIZ" />
+
+    <MajorUpgrade Schedule="afterInstallValidate" AllowSameVersionUpgrades="yes"
+                  DowngradeErrorMessage="Kompyuterda Yangi Alifbo'ning yangiroq versiyasi o'rnatilgan." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <Condition Message="Yangi Alifbo uchun .NET Framework 4 kerak.">Installed OR NETFRAMEWORK40FULL OR NETFRAMEWORK40CLIENT</Condition>
+    <PropertyRef Id="NETFRAMEWORK40FULL" />
+    <PropertyRef Id="NETFRAMEWORK40CLIENT" />
+
+    <Icon Id="AppIcon" SourceFile="installer\YangiAlifbo.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+    <Property Id="ARPHELPLINK" Value="https://dellcom.uz" />
+    <Property Id="ARPNOREPAIR" Value="1" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="YangiAlifbo" />
+      </Directory>
+      <Directory Id="ProgramMenuFolder" />
+    </Directory>
+
+    <DirectoryRef Id="INSTALLFOLDER">
+      <Component Id="cOffice" Guid="{2C7E9A41-6D3B-4F58-8A12-5E0C9B4D7F31}">
+        <File Id="fOffice" Source="out\YangiAlifbo.Office.dll" KeyPath="yes" />
+      </Component>
+      <Component Id="cTray" Guid="{8B1D4F62-3A9E-4C07-B5D8-1F6E2A9C0D47}">
+        <File Id="fTray" Source="out\YangiAlifbo.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="cSetup" Guid="{4E5A0C93-7F2B-4D16-9E8C-3B7A1D5F6E28}">
+        <File Id="fSetup" Source="out\YangiAlifbo.Setup.exe" KeyPath="yes" />
+      </Component>
+      <Component Id="cReadme" Guid="{9D3C6B15-2E8F-4A70-8C41-6F0B5E2D9A13}">
+        <File Id="fReadme" Source="README.txt" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <DirectoryRef Id="ProgramMenuFolder">
+      <Component Id="cShortcut" Guid="{5F8B2E74-1C6D-4B39-A0E5-7D2C9F4B1E86}">
+        <Shortcut Id="sTray" Name="Yangi Alifbo" Description="Yozayotganda eski lotin -&gt; yangi lotin"
+                  Target="[INSTALLFOLDER]YangiAlifbo.exe" WorkingDirectory="INSTALLFOLDER" Icon="AppIcon" />
+        <RegistryValue Root="HKLM" Key="Software\YangiAlifbo" Name="MsiShortcut" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+
+    <Feature Id="Main" Title="Yangi Alifbo" Level="1">
+      <ComponentRef Id="cOffice" />
+      <ComponentRef Id="cTray" />
+      <ComponentRef Id="cSetup" />
+      <ComponentRef Id="cReadme" />
+      <ComponentRef Id="cShortcut" />
+    </Feature>
+
+    <!-- Ishlab turgan «Ö» (eski Setup.exe nusxasi ham) — fayllar band bo'lmasligi uchun -->
+    <SetProperty Id="StopTray" Value="&quot;[SystemFolder]taskkill.exe&quot; /F /IM YangiAlifbo.exe" Before="StopTray" Sequence="execute" />
+    <CustomAction Id="StopTray" BinaryKey="WixCA" DllEntry="WixQuietExec" Execute="deferred" Impersonate="no" Return="ignore" />
+
+    <!-- COM + Office (HKLM, ikkala ko'rinish) + avtoyuklash -->
+    <CustomAction Id="Register" FileKey="fSetup" ExeCommand="/msi-register" Execute="deferred" Impersonate="no" Return="check" />
+    <CustomAction Id="Unregister" FileKey="fSetup" ExeCommand="/msi-unregister" Execute="deferred" Impersonate="no" Return="ignore" />
+
+    <!-- O'rnatish tugagach «Ö» foydalanuvchi nomidan (oddiy huquqda) ishga tushadi -->
+    <Property Id="WixShellExecTarget" Value="[#fTray]" />
+    <CustomAction Id="LaunchTray" BinaryKey="WixCA" DllEntry="WixShellExec" Execute="immediate" Impersonate="yes" Return="ignore" />
+
+    <InstallExecuteSequence>
+      <Custom Action="StopTray" Before="InstallFiles">NOT (REMOVE~="ALL")</Custom>
+      <Custom Action="Unregister" Before="RemoveFiles">REMOVE~="ALL"</Custom>
+      <Custom Action="Register" After="InstallFiles">NOT (REMOVE~="ALL")</Custom>
+      <Custom Action="LaunchTray" After="InstallFinalize">NOT (REMOVE~="ALL") AND NOT UPGRADINGPRODUCTCODE</Custom>
+    </InstallExecuteSequence>
+
+    <WixVariable Id="WixUILicenseRtf" Value="installer\License.rtf" />
+    <UIRef Id="WixUI_Minimal" />
+  </Product>
+</Wix>

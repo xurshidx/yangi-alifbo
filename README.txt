@@ -1,9 +1,13 @@
-YANGI ALIFBO v3.0.0 — Word, Excel, PowerPoint qo'shimchasi + Windows'da avto-tuzatish
+YANGI ALIFBO v3.1.0 — Word, Excel, PowerPoint qo'shimchasi + Windows'da avto-tuzatish
 DELL COMPUTER SERVIZ
 
-O'RNATISH
-1. Word, Excel va PowerPoint'ni yoping.
-2. YangiAlifbo.Setup.exe ni ishga tushiring — Windows administrator ruxsatini so'raydi (UAC).
+O'RNATISH — ikki usuldan biri
+A) YangiAlifbo_v3.1.0.msi (tavsiya): ikki marta bosing → «Далее» → «Установить». Dastur «Программы и компоненты»
+   ro'yxatida chiqadi, o'sha yerdan o'chiriladi; yangi versiya eskisining ustidan o'rnatiladi. Barcha foydalanuvchilar uchun.
+B) YangiAlifbo.Setup.exe: Word, Excel va PowerPoint'ni yoping va ishga tushiring — Windows administrator ruxsatini so'raydi (UAC).
+   Faqat joriy foydalanuvchi uchun. Ikkalasini bir vaqtda ishlatmang: Setup.exe bilan o'rnatilgan bo'lsa,
+   MSI dan oldin «YangiAlifbo.Setup.exe /uninstall» qiling.
+Keyin:
 3. Dasturlarni qayta oching — «Надстройки» (Add-ins) varag'ida «Yangi Alifbo» guruhi chiqadi.
 4. Soat yonida ko'k «Ö» belgisi paydo bo'ladi — bu avto-tuzatish (kompyuter yonganda o'zi ishga tushadi).
 
@@ -44,7 +48,9 @@ Bir martalik to'lov, 1 kompyuter, muddatsiz. Kalitni «Litsenziya» tugmasi orqa
 Yangi kompyuterga o'tsangiz — sotuvchiga murojaat qiling, u kalitni eski kompyuterdan ajratadi.
 
 O'CHIRISH
-Buyruq satrida: YangiAlifbo.Setup.exe /uninstall
+MSI bilan o'rnatilgan bo'lsa — «Программы и компоненты» → Yangi Alifbo → «Удалить».
+Setup.exe bilan o'rnatilgan bo'lsa — buyruq satrida: YangiAlifbo.Setup.exe /uninstall
+Litsenziya va sinov ma'lumoti (%APPDATA%\YangiAlifbo) o'chirilmaydi — qayta o'rnatilganda kalit kerak emas.
 
 TALABLAR
 Windows 7/8/10/11, .NET Framework 4.x. Office qo'shimchasi uchun — Microsoft Office 2007 yoki yangiroq (32 yoki 64-bit);

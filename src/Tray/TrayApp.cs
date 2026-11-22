@@ -81,6 +81,7 @@ namespace YangiAlifbo.Tray
             licTimer.Start();
             try { lic.SyncInBackground(); } catch { }
 
+            ClearOfficeDisabledItems();
             fixer.Start();
             UpdateUi();
             tray.Visible = true;
@@ -219,6 +220,29 @@ namespace YangiAlifbo.Tray
         static void OpenInNotepad(string file)
         {
             try { Process.Start("notepad.exe", "\"" + file + "\""); } catch { }
+        }
+
+        /// <summary>
+        /// Office qulagan qo'shimchani HKCU\...\Resiliency\DisabledItems ga yozib qo'yadi. MSI o'rnatishda bu HKCU
+        /// tozalanmaydi (SYSTEM nomidan) — shuning uchun har kirishda shu yerda (faqat "yangi alifbo" yozuvlari).
+        /// </summary>
+        static void ClearOfficeDisabledItems()
+        {
+            foreach (string ver in new[] { "12.0", "14.0", "15.0", "16.0" })
+                foreach (string app in new[] { "Word", "Excel", "PowerPoint" })
+                    try
+                    {
+                        using (var k = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Office\" + ver + @"\" + app + @"\Resiliency\DisabledItems", true))
+                        {
+                            if (k == null) continue;
+                            foreach (string n in k.GetValueNames())
+                            {
+                                var b = k.GetValue(n) as byte[];
+                                if (b != null && Encoding.Unicode.GetString(b).ToLowerInvariant().Contains("yangi alifbo")) k.DeleteValue(n, false);
+                            }
+                        }
+                    }
+                    catch { }
         }
 
         // ---------- registr ----------

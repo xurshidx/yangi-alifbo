@@ -52,3 +52,20 @@ Topshiriq: `docs/spec-v3-avto.md` (egasi tasdiqladi: yozayotganda avto, bitta ka
 - 2026-11-22: boshqa dasturlarning sun'iy tugmalari (KeePass avto-kiritish va h.k.) qayta ishlanmaydi; o'zimiz yuborganlar `dwExtraInfo` belgisi bilan ajratiladi.
   Sinov rejimi `HKCU\Software\YangiAlifbo\AvtoTestInjected=1` (faqat avto_sinov.ps1 uchun, oxirida o'chiriladi)
 - 2026-11-22: PowerShell `SendKeys` journal playback ishlatadi — LL hook uni ko'rmaydi; sinov `SendInput` + VK kodlar bilan
+
+## v3.1.0 — MSI o'rnatuvchi (23.11.2026)
+Egasi so'rovi: .exe dan tashqari .msi; paketda ikkalasi qoladi.
+
+| # | Bosqich | Holat | Tekshiruv |
+|---|---|---|---|
+| 1 | WiX 3.14 (C:\Projects\tools\wix314) | bajarildi | candle 3.14.1.8722 |
+| 2 | Setup.exe /msi-register, /msi-unregister; tray DisabledItems | bajarildi | kompilyatsiya, CoreTests 130 |
+| 3 | installer/Product.wxs, build.cmd msi/release | bajarildi | light ICE (38/43/57/61 asoslangan holda o'chirilgan) |
+| 4 | O'rnatish / o'chirish / yangilash | bajarildi | msiexec /qn: exit 0; COM ikkala ko'rinishda; Word Connect=True; o'chirishdan keyin registr toza; yangilashdan keyin 1 mahsulot |
+| 5 | ESET | bajarildi | msi + zip — 0 tahdid |
+
+### Qarorlar
+- 2026-11-23: 32-bit MSI (x86) — Windows 7..11 va 32/64-bit Office; 64-bit registrga yozish Setup.exe custom action orqali
+- 2026-11-23: MSI HKCU ga yozmaydi (custom action SYSTEM nomidan); avtoyuklash va Office qo'shimchasi HKLM — barcha foydalanuvchilar
+- 2026-11-23: o'rnatish oynasi ruscha (WiX'da o'zbekcha yo'q), litsenziya matni o'zbekcha (installer/License.rtf)
+- Egasining kompyuterida v3.1.0 MSI bilan o'rnatilgan holda qoldi (23.11.2026 00:23)

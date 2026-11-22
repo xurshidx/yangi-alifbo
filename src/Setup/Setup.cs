@@ -60,6 +60,8 @@ namespace YangiAlifbo.Setup
             }
             try
             {
+                if (mode == "/msi-register") { MsiRegister(); return 0; }
+                if (mode == "/msi-unregister") { MsiUnregister(); return 0; }
                 if (mode == "/uninstall") { Uninstall(); Console.WriteLine("Yangi Alifbo öçirildi."); }
                 else { Install(); Console.WriteLine("Yangi Alifbo örnatildi: " + InstallDir); Console.WriteLine("Word, Excel, PowerPoint'ni qayta oçing — «Надстройки» varağida «Yangi Alifbo» guruhi.");
                     Console.WriteLine("Avto-tuzatiş soat yonidagi «Ö» belgisi orqali boşqariladi (Pause — yoqiş/öçiriş)."); }
@@ -93,30 +95,9 @@ namespace YangiAlifbo.Setup
             }
             try { File.Delete(Path.Combine(LegacyDir, "YangiAlifbo.Core.dll")); } catch { }
 
+            RegisterCom(asmName, codeBase);
             foreach (RegistryView view in Views)
             {
-                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
-                {
-                    using (var k = hklm.CreateSubKey(@"SOFTWARE\Classes\CLSID\" + Clsid))
-                    {
-                        k.SetValue("", ClassName);
-                        using (var ip = k.CreateSubKey("InprocServer32"))
-                        {
-                            ip.SetValue("", "mscoree.dll");
-                            ip.SetValue("ThreadingModel", "Both");
-                            ip.SetValue("Class", ClassName);
-                            ip.SetValue("Assembly", asmName);
-                            ip.SetValue("RuntimeVersion", "v4.0.30319");
-                            ip.SetValue("CodeBase", codeBase);
-                        }
-                        using (var p = k.CreateSubKey("ProgId")) p.SetValue("", ProgId);
-                    }
-                    using (var k = hklm.CreateSubKey(@"SOFTWARE\Classes\" + ProgId))
-                    {
-                        k.SetValue("", ClassName);
-                        using (var c = k.CreateSubKey("CLSID")) c.SetValue("", Clsid);
-                    }
-                }
                 using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, view))
                 {
                     foreach (string app in Apps)
@@ -150,6 +131,91 @@ namespace YangiAlifbo.Setup
         {
             try { Process.Start("explorer.exe", "\"" + exe + "\""); }
             catch (Exception e) { Console.WriteLine("Fon dasturi ishga tushmadi (kompyuter qayta yoqilganda özi ishga tuşadi): " + e.Message); }
+        }
+
+
+        /// <summary>COM ro'yxati HKLM da, ikkala registr ko'rinishida (32/64-bit Office).</summary>
+        static void RegisterCom(string asmName, string codeBase)
+        {
+            foreach (RegistryView view in Views)
+            {
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                {
+                    using (var k = hklm.CreateSubKey(@"SOFTWARE\Classes\CLSID\" + Clsid))
+                    {
+                        k.SetValue("", ClassName);
+                        using (var ip = k.CreateSubKey("InprocServer32"))
+                        {
+                            ip.SetValue("", "mscoree.dll");
+                            ip.SetValue("ThreadingModel", "Both");
+                            ip.SetValue("Class", ClassName);
+                            ip.SetValue("Assembly", asmName);
+                            ip.SetValue("RuntimeVersion", "v4.0.30319");
+                            ip.SetValue("CodeBase", codeBase);
+                        }
+                        using (var p = k.CreateSubKey("ProgId")) p.SetValue("", ProgId);
+                    }
+                    using (var k = hklm.CreateSubKey(@"SOFTWARE\Classes\" + ProgId))
+                    {
+                        k.SetValue("", ClassName);
+                        using (var c = k.CreateSubKey("CLSID")) c.SetValue("", Clsid);
+                    }
+                }
+            }
+        }
+
+        // ---------- v3.1: MSI uchun (o'rnatuvchi o'z papkasidan, SYSTEM nomidan chaqiradi) ----------
+        static readonly string HklmRun = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+
+        /// <summary>
+        /// MSI fayllarni qo'ygandan keyin: COM, barcha foydalanuvchilar uchun Office qo'shimchasi va avtoyuklash (HKLM).
+        /// HKCU ga yozilmaydi — MSI amali SYSTEM nomidan bajariladi. Office o'chirib qo'ygan qo'shimchani
+        /// (HKCU Resiliency) har bir foydalanuvchida YangiAlifbo.exe o'zi tozalaydi.
+        /// </summary>
+        static void MsiRegister()
+        {
+            string dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string dll = Path.Combine(dir, "YangiAlifbo.Office.dll");
+            string exe = Path.Combine(dir, "YangiAlifbo.exe");
+            StopTray();
+            RegisterCom(AssemblyName.GetAssemblyName(dll).FullName, "file:///" + dll.Replace('\\', '/'));
+            foreach (RegistryView view in Views)
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                {
+                    foreach (string app in Apps)
+                        using (var k = hklm.CreateSubKey(@"SOFTWARE\Microsoft\Office\" + app + @"\Addins\" + ProgId))
+                        {
+                            k.SetValue("FriendlyName", "Yangi Alifbo");
+                            k.SetValue("Description", "Kirill / lotin / yangi alifbo ögiruvçi");
+                            k.SetValue("LoadBehavior", 3, RegistryValueKind.DWord);
+                        }
+                }
+            using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+            using (var run = hklm.CreateSubKey(HklmRun)) run.SetValue(RunName, "\"" + exe + "\"");
+            // Setup.exe bilan oldin o'rnatilgan nusxa (C:\Program Files\YangiAlifbo) — MSI nusxasi bilan to'qnashmasin
+            foreach (string old in new[] { Environment.GetEnvironmentVariable("ProgramW6432"), Environment.GetEnvironmentVariable("ProgramFiles") })
+            {
+                if (string.IsNullOrEmpty(old)) continue;
+                string od = Path.Combine(old, "YangiAlifbo");
+                if (string.Equals(Path.GetFullPath(od).TrimEnd('\\'), Path.GetFullPath(dir).TrimEnd('\\'), StringComparison.OrdinalIgnoreCase)) continue;
+                foreach (string f in new[] { "YangiAlifbo.Office.dll", "YangiAlifbo.exe" })
+                    try { File.Delete(Path.Combine(od, f)); } catch { }
+            }
+        }
+
+        static void MsiUnregister()
+        {
+            StopTray();
+            foreach (RegistryView view in Views)
+                using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                {
+                    hklm.DeleteSubKeyTree(@"SOFTWARE\Classes\CLSID\" + Clsid, false);
+                    hklm.DeleteSubKeyTree(@"SOFTWARE\Classes\" + ProgId, false);
+                    foreach (string app in Apps)
+                        hklm.DeleteSubKeyTree(@"SOFTWARE\Microsoft\Office\" + app + @"\Addins\" + ProgId, false);
+                }
+            using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+            using (var run = hklm.OpenSubKey(HklmRun, true)) if (run != null) run.DeleteValue(RunName, false);
         }
 
         /// <summary>

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v3.1.0 — 2026-11-23 (MSI o'rnatuvchi)
+- `YangiAlifbo_v3.1.0.msi` (WiX 3.14): «Программы и компоненты» da yozuv va belgi, ruscha o'rnatish oynasi, litsenziya matni, avtomatik yangilash (MajorUpgrade), Bosh menyuda yorliq
+- MSI barcha foydalanuvchilar uchun: Program Files (x86)\YangiAlifbo, COM + Office qo'shimchasi + avtoyuklash HKLM da (`YangiAlifbo.Setup.exe /msi-register`, ikkala registr ko'rinishi); o'rnatishdan oldin ishlab turgan «Ö» to'xtatiladi, oxirida ishga tushiriladi
+- Setup.exe saqlanadi (paketda ikkalasi); yangi `/msi-register`, `/msi-unregister` rejimlari; MSI eski Setup.exe nusxasini (C:\Program Files\YangiAlifbo) olib tashlaydi
+- «Ö» har kirishda Office o'chirib qo'ygan qo'shimchani (HKCU Resiliency) o'zi tiklaydi; YangiAlifbo.exe da belgi (installer/YangiAlifbo.ico)
+- Sinov (Windows 10, Office 2007): o'rnatish → Word COMAddIn Connect=True → o'chirish (toza, litsenziya saqlanadi) → yangilash (bitta yozuv qoladi); ESET — toza
+
 ## v3.0.0 — 2026-11-22 (Windows'da yozayotganda avto-tuzatish)
 - Yangi `YangiAlifbo.exe` — treydagi «Ö» belgisi: istalgan dasturda eski lotin (o', g', sh, ch) so'z tugaganda yangi lotinga almashadi
 - Pause — yoqish/o'chirish; Backspace — oxirgi almashtirishni qaytarish va so'zni istisnoga qo'shish (`%APPDATA%\YangiAlifbo\avto_istisno.txt`)
