@@ -1,4 +1,4 @@
-YANGI ALIFBO v1.0.1 — Word, Excel, PowerPoint uchun qo'shimcha
+YANGI ALIFBO v2.0.0 — Word, Excel, PowerPoint uchun qo'shimcha
 DELL COMPUTER SERVIZ
 
 O'RNATISH
@@ -10,6 +10,7 @@ TUGMALAR
 - Kirill → Lotin      : kirill matnni yangi lotin alifbosiga (Ö, Ğ, Ş, Ç)
 - Lotin → Kirill      : eski yoki yangi lotin matnni kirillga
 - Eski → Yangi lotin  : O', G', Sh, Ch → Ö, Ğ, Ş, Ç
+- Litsenziya          : holat va kalitni faollashtirish
 - Haqida
 
 Matn belgilangan bo'lsa — faqat u o'giriladi. Hech narsa belgilanmagan bo'lsa — butun hujjat.
@@ -21,6 +22,12 @@ Agar Office "«yangi alifbo» qo'shimchasida jiddiy xato... o'chirilsinmi?" deb 
 Agar qo'shimcha chiqmasa: YangiAlifbo.Setup.exe ni qayta ishga tushiring
 (u Office o'chirib qo'ygan qo'shimchani qayta yoqadi).
 Diagnostika jurnali: %LOCALAPPDATA%\YangiAlifbo\log.txt
+
+LITSENZIYA
+7 kun bepul sinov (hamma narsa ishlaydi). Keyin litsenziya kaliti kerak: YA-XXXX-XXXX-XXXX.
+Bir martalik to'lov, 1 kompyuter, muddatsiz. Kalitni «Litsenziya» tugmasi orqali kiriting
+(birinchi faollashtirishda internet kerak, keyin internetsiz ishlaydi).
+Yangi kompyuterga o'tsangiz — sotuvchiga murojaat qiling, u kalitni eski kompyuterdan ajratadi.
 
 O'CHIRISH
 Buyruq satrida: YangiAlifbo.Setup.exe /uninstall

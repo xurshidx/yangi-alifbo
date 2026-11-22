@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v2.0.0 — 2026-11-22 (litsenziya)
+- 7 kunlik bepul sinov; litsenziya kaliti YA-XXXX-XXXX-XXXX (Boshqaruv markazi, dell-platform v2.11.0 / server 4.32.0); bir martalik, 1 kompyuter, muddatsiz
+- Lentada «Litsenziya» tugmasi va oyna: holat, kalit kiritish, narx, Telegram orqali sotib olish
+- Imzo RSA-2048/SHA-256 (keys/alifbo_pub.xml — VDS kaliti); sinov sanasi serverda va mahalliy (fayl + registr); haftalik bekor qilinganini tekshirish; internetsiz ishlaydi
+- Testlar: CoreTests 104, LicenseSmoke 26 (Windows + test serveri), ServerCheck (haqiqiy pos.dellcom.uz)
+
 ## v1.0.1 — 2026-11-22 (Office 2007 da qo'shimcha yuklanmasligi va qulashi tuzatildi)
 - IDTExtensibility2: `custom` parametri SAFEARRAY sifatida marshal qilinadi — Excel/PowerPoint 2007 clr.dll ichida qulashi (0xc0000005) tuzatildi
 - COM ro'yxati HKLM ga ko'chirildi: .NET shim HKCU dagi managed COM yozuvini o'qimaydi (80070002); Setup administrator ruxsatini so'raydi, fayllar Program Files\YangiAlifbo da

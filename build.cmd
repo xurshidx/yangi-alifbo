@@ -25,6 +25,7 @@ rem bog'liqliklar (YangiAlifbo.Core.dll) topilmaydi (80070002), shuning uchun bi
 "%CSC%" %OPTS% /target:exe /win32manifest:src\Setup\app.manifest /out:out\YangiAlifbo.Setup.exe src\Setup\Setup.cs || exit /b 1
 "%CSC%" %OPTS% /target:exe %REFS% /r:out\YangiAlifbo.Office.dll /out:out\OfficeSmoke.exe tests\OfficeSmoke.cs || exit /b 1
 "%CSC%" %OPTS% /target:exe %REFS% /r:out\YangiAlifbo.Office.dll /out:out\LicenseSmoke.exe tests\LicenseSmoke.cs || exit /b 1
+"%CSC%" %OPTS% /target:exe %REFS% /r:out\YangiAlifbo.Office.dll /out:out\ServerCheck.exe tests\ServerCheck.cs || exit /b 1
 
 if /i "%1"=="test" (
   out\CoreTests.exe || exit /b 1
