@@ -11,7 +11,7 @@ const hw=s=>crypto.createHash('sha256').update(s).digest('hex').slice(0,32);
  if(!H.chromium||!H.CHROME){console.log('SKIP');ok=true;return}
  await H.start();const Ad=await H.admin();
  web=http.createServer(async(req,res)=>{const u=new URL(req.url,'http://x');
-  if(u.pathname.startsWith('/api/alifbo/')){let b=[];for await(const c of req)b.push(c);const r=await fetch(H.base+req.url,{method:req.method,headers:{'content-type':req.headers['content-type']||'application/json'},body:req.method==='POST'?Buffer.concat(b):undefined});
+  if(u.pathname.startsWith('/api/alifbo/')){let b=[];for await(const c of req)b.push(c);const r=await fetch(H.base+req.url,{method:req.method,headers:{'content-type':req.headers['content-type']||'application/json',...(process.env.PROXY_ORIGIN==='1'&&req.headers.origin?{origin:req.headers.origin}:{})} /* nginx kabi: Origin tozalanadi — PROXY_ORIGIN=1 bo'lsa uzatiladi (CORS 403 ni ko'rsatadi) */,body:req.method==='POST'?Buffer.concat(b):undefined});
    res.writeHead(r.status,{'content-type':'application/json'});return res.end(Buffer.from(await r.arrayBuffer()))}
   let f=u.pathname==='/css/main.css'&&CSS?CSS:path.join(SITE,u.pathname.endsWith('/')?u.pathname+'index.html':u.pathname);if(!fs.existsSync(f)&&fs.existsSync(f+'.html'))f+='.html';
   if(!fs.existsSync(f)){res.writeHead(404);return res.end()}
