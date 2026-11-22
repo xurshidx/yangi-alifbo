@@ -78,7 +78,7 @@ Topshiriq: `docs/spec-v2.1-tolov.md` (egasi tasdiqladi). Server tomoni — dell-
 | 1 | LicenseService: BuyUrl, MarkBuyPending/BuyPending, Claim | bajarildi | LicenseSmoke 38/38 (mono + testserver) |
 | 2 | LicenseForm «Sotib oliş» + 5 s kutish; «Ö» 24 soat har daqiqada | bajarildi | kompilyatsiya; Windows'da — egasida |
 | 3 | Sayt site/alifbo (index, sotib-olish, oferta) | bajarildi | sayt_e2e 5/5 (qo'lda va Payme rejimi, Chrome) |
-| 4 | VDS: server v2.12.0, nginx /api/alifbo/, sahifalar, MSI | ⏳ egasi ruxsati | dell-platform deploy/YANGILASH_v2_12_0.md |
+| 4 | VDS: server v2.12.0, nginx /api/alifbo/, sahifalar, MSI | bajarildi 23.11.2026 01:22 | dellcom.uz/alifbo 200, /api/alifbo/info 200, MSI sha256 038306ff…; oferta — STIR/manzil/telefon kutilmoqda |
 | 5 | Payme kassa | ⏳ Payme yordami | «Добавить кассу» tugmasi yo'q |
 
 ### Qarorlar
