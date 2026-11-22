@@ -1,5 +1,6 @@
 'use strict';
 /* Litsenziya sinovi uchun kichik server: dell-platform Server_v4/alifbo.js ni o'zgarishsiz ishlatadi (admin har doim ruxsat).
+   v3.2.0: onlayn sotuv (alifbo_shop.js) ham — admin/shop, order, confirm, claim.
    Foydalanish: node tests/testserver.cjs <alifbo.js yo'li> <port> <ma'lumot papkasi>. Faqat 127.0.0.1 da. */
 const http=require('node:http'),fs=require('node:fs');
 const [,,modPath,port='18787',dir]=process.argv;

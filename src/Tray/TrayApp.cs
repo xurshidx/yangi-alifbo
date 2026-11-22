@@ -77,7 +77,7 @@ namespace YangiAlifbo.Tray
 
             RefreshLicense();
             licTimer.Interval = 60 * 1000;
-            licTimer.Tick += delegate { RefreshLicense(); };
+            licTimer.Tick += delegate { RefreshLicense(); ClaimIfPending(); };
             licTimer.Start();
             try { lic.SyncInBackground(); } catch { }
 
@@ -130,6 +130,26 @@ namespace YangiAlifbo.Tray
             }
             if (allowed) expiredShown = false;
             UpdateUi();
+        }
+
+        volatile bool claiming;
+
+        /// <summary>v3.2.0: «Sotib oliş» bosilgandan keyin 24 soat davomida har daqiqada — to'lov kelsa litsenziya o'zi saqlanadi.</summary>
+        void ClaimIfPending()
+        {
+            if (claiming || !lic.BuyPending || lic.LicensedKey.Length > 0) return;
+            claiming = true;
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                bool ok = false;
+                try { ok = lic.Claim(); } catch (Exception e) { Connect.Log("Avto claim: " + e.Message); }
+                finally { claiming = false; }
+                if (ok) ui.Post(delegate
+                {
+                    RefreshLicense();
+                    tray.ShowBalloonTip(8000, Title, "Tölov qabul qilindi — litsenziya faollaşdi. Rahmat!", ToolTipIcon.Info);
+                }, null);
+            });
         }
 
         void OnExpiredBalloon(object s, EventArgs e) { tray.BalloonTipClicked -= OnExpiredBalloon; ShowLicense("Sinov muddati tugadi"); }

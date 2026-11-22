@@ -21,7 +21,9 @@ namespace YangiAlifbo.Office
     public class LicenseService
     {
         public const string DefaultServer = "https://pos.dellcom.uz";
-        public const string Version = "3.1.0";
+        public const string DefaultShop = "https://dellcom.uz/alifbo/sotib-olish.html";
+        const int BuyPendingHours = 24;
+        public const string Version = "3.2.0";
         const int CheckEveryDays = 7;
 
         readonly string dir;
@@ -247,6 +249,60 @@ namespace YangiAlifbo.Office
                 WriteState(st);
             }
             Remember(d);
+        }
+
+        // ---------- v3.2.0: onlayn sotib olish (dell-platform v2.12.0, /api/alifbo/claim) ----------
+
+        /// <summary>Sotib olish sahifasi: kompyuter ID va nomi bilan (to'lovdan keyin dastur o'zi faollashadi).</summary>
+        public string BuyUrl
+        {
+            get
+            {
+                string shop = DefaultShop;
+                try { using (var k = Registry.CurrentUser.OpenSubKey(regPath)) { string v = k == null ? null : k.GetValue("Shop") as string; if (!string.IsNullOrEmpty(v)) shop = v; } } catch { }
+                return shop + "?hw=" + MyHwid + "&pc=" + Uri.EscapeDataString(Environment.MachineName) + "&v=" + Version;
+            }
+        }
+
+        /// <summary>«Sotib oliş» bosildi — keyingi 24 soat davomida claim so'raladi.</summary>
+        public void MarkBuyPending()
+        {
+            lock (gate) { var st = ReadState(); st["buyPending"] = Iso(DateTime.UtcNow); try { WriteState(st); } catch { } }
+        }
+
+        public bool BuyPending
+        {
+            get
+            {
+                var st = ReadState();
+                DateTime? t = ParseUtc(st.ContainsKey("buyPending") ? st["buyPending"] : null);
+                return t.HasValue && (DateTime.UtcNow - t.Value).TotalHours < BuyPendingHours && t.Value <= DateTime.UtcNow.AddMinutes(5);
+            }
+        }
+
+        /// <summary>
+        /// Server shu kompyuter uchun to'langan buyurtma bormi deb so'raladi. Bo'lsa — imzolangan litsenziya saqlanadi (true).
+        /// Tarmoq xatosi ServerError beradi; "pending"/"none" — false.
+        /// </summary>
+        public bool Claim()
+        {
+            if (LicensedKey.Length > 0) return true;
+            var d = Post("/api/alifbo/claim", MiniJson.Obj("hwid", MyHwid, "version", Version), 10000);
+            Remember(d);
+            if (MiniJson.S(d, "status") != "paid") return false;
+            var lic = d.ContainsKey("license") ? d["license"] as Dictionary<string, object> : null;
+            string payload = MiniJson.S(lic, "payload"), sig = MiniJson.S(lic, "sig"), key = MiniJson.S(d, "key");
+            if (!LicenseCore.IsValidFor(payload, sig, pubXml, MyHwid)) throw new ServerError("Server javobidagi litsenziya imzosi tasdiqlanmadi.");
+            lock (gate)
+            {
+                WriteLicense(key, payload, sig);
+                var st = ReadState();
+                st.Remove("revoked");
+                st.Remove("buyPending");
+                st["lastCheck"] = Iso(DateTime.UtcNow);
+                WriteState(st);
+            }
+            return true;
         }
 
         /// <summary>Sotib olish ma'lumoti (narx, Telegram) — oxirgi server javobidan.</summary>

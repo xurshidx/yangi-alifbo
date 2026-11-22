@@ -69,3 +69,18 @@ Egasi so'rovi: .exe dan tashqari .msi; paketda ikkalasi qoladi.
 - 2026-11-23: MSI HKCU ga yozmaydi (custom action SYSTEM nomidan); avtoyuklash va Office qo'shimchasi HKLM — barcha foydalanuvchilar
 - 2026-11-23: o'rnatish oynasi ruscha (WiX'da o'zbekcha yo'q), litsenziya matni o'zbekcha (installer/License.rtf)
 - Egasining kompyuterida v3.1.0 MSI bilan o'rnatilgan holda qoldi (23.11.2026 00:23)
+
+## v3.2.0 — onlayn sotib olish (23.11.2026)
+Topshiriq: `docs/spec-v2.1-tolov.md` (egasi tasdiqladi). Server tomoni — dell-platform v2.12.0.
+
+| # | Bosqich | Holat | Tekshiruv |
+|---|---|---|---|
+| 1 | LicenseService: BuyUrl, MarkBuyPending/BuyPending, Claim | bajarildi | LicenseSmoke 38/38 (mono + testserver) |
+| 2 | LicenseForm «Sotib oliş» + 5 s kutish; «Ö» 24 soat har daqiqada | bajarildi | kompilyatsiya; Windows'da — egasida |
+| 3 | Sayt site/alifbo (index, sotib-olish, oferta) | bajarildi | sayt_e2e 5/5 (qo'lda va Payme rejimi, Chrome) |
+| 4 | VDS: server v2.12.0, nginx /api/alifbo/, sahifalar, MSI | ⏳ egasi ruxsati | dell-platform deploy/YANGILASH_v2_12_0.md |
+| 5 | Payme kassa | ⏳ Payme yordami | «Добавить кассу» tugmasi yo'q |
+
+### Qarorlar
+- 2026-11-23: sahifa API'ni o'z domenidan chaqiradi (dellcom.uz nginx → `/api/alifbo/`), CORS ochilmaydi
+- 2026-11-23: buyurtmada kompyuter ID bo'lsa kalit to'lov paytida shu kompyuterga bog'lanadi; dastur `claim` bilan oladi

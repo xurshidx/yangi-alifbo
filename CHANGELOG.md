@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## v3.2.0 — 2026-11-23 (onlayn sotib olish, dastur o'zi faollashadi)
+- Litsenziya oynasida «Sotib oliş» tugmasi: `https://dellcom.uz/alifbo/sotib-olish.html?hw=<kompyuter ID>&pc=<nom>&v=<versiya>`
+  (registr `HKCU\Software\YangiAlifbo\Shop` bilan almashtiriladi); oyna ochiq bo'lsa har 5 s, «Ö» esa 24 soat davomida har daqiqada `POST /api/alifbo/claim` —
+  to'lov tasdiqlansa imzolangan litsenziya saqlanadi (kalit kiritish shart emas). Server: dell-platform v2.12.0 (`alifbo_shop.js`)
+- Sayt `site/alifbo/`: bosh sahifa, sotib olish (Payme yoki qo'lda rekvizit + «To'ladim», holat va kalit), ommaviy oferta (⟨STIR⟩, ⟨manzil⟩, ⟨telefon⟩ — egasi to'ldiradi)
+- Testlar: CoreTests 130, LicenseSmoke 38 (+11 claim), `tests/sayt_e2e.cjs` 5 (Chrome, dell-platform serveri bilan)
+
 ## v3.1.0 — 2026-11-23 (MSI o'rnatuvchi)
 - `YangiAlifbo_v3.1.0.msi` (WiX 3.14): «Программы и компоненты» da yozuv va belgi, ruscha o'rnatish oynasi, litsenziya matni, avtomatik yangilash (MajorUpgrade), Bosh menyuda yorliq
 - MSI barcha foydalanuvchilar uchun: Program Files (x86)\YangiAlifbo, COM + Office qo'shimchasi + avtoyuklash HKLM da (`YangiAlifbo.Setup.exe /msi-register`, ikkala registr ko'rinishi); o'rnatishdan oldin ishlab turgan «Ö» to'xtatiladi, oxirida ishga tushiriladi

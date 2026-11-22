@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yangi Alifbo — sotib olish | 15 000 so'm, bir martalik</title>
+<meta name="description" content="Yangi Alifbo litsenziyasini sotib olish: 15 000 so'm, bir martalik to'lov, 1 kompyuter, muddatsiz. To'lovdan keyin dastur o'zi faollashadi.">
+<link rel="canonical" href="https://dellcom.uz/alifbo/sotib-olish">
+<meta name="theme-color" content="#07080A">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://dellcom.uz/alifbo/sotib-olish">
+<meta property="og:title" content="Yangi Alifbo — sotib olish | 15 000 so'm, bir martalik">
+<meta property="og:description" content="Yangi Alifbo litsenziyasini sotib olish: 15 000 so'm, bir martalik to'lov, 1 kompyuter, muddatsiz. To'lovdan keyin dastur o'zi faollashadi.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/alifbo/alifbo.css">
+</head>
+<body class="page-niche page-alifbo" data-accent="green">
+<header class="top">
+  <a class="brand" href="/alifbo/" aria-label="Yangi Alifbo — bosh sahifa">
+    <span class="ya-logo" aria-hidden="true">Ö</span>
+    <span>Yangi Alifbo</span>
+  </a>
+  <nav class="nav" aria-label="Asosiy">
+    <a href="/alifbo/#imkoniyatlar">Imkoniyatlar</a>
+    <a href="/alifbo/#narx">Narx</a>
+    <a href="/alifbo/#savollar">Savollar</a>
+    <a href="/">DellPOS</a>
+  </nav>
+  <div class="top-actions">
+    <a class="btn btn-ghost" href="/alifbo/yuklab/YangiAlifbo.msi">Yuklab olish</a>
+    <a class="btn btn-primary" href="/alifbo/sotib-olish">Sotib olish</a>
+  </div>
+</header>
+<main>
+<section class="niche-sec ya-buy">
+  <div class="wrap ya-buy-wrap">
+    <div class="ya-buy-info">
+      <p class="eyebrow">Yangi Alifbo · litsenziya</p>
+      <h1 class="ya-h1">Sotib olish</h1>
+      <p class="ya-big" id="price">15 000 so'm</p>
+      <ul class="ticks"><li>bir martalik to'lov, 1 kompyuter, muddatsiz</li><li>Office qo'shimchasi + Windows'da avto-tuzatish</li><li>to'lovdan keyin dastur o'zi faollashadi</li></ul>
+      <p class="ya-pc" id="pcNote" hidden></p>
+    </div>
+
+    <form class="lead-form" id="buyForm" novalidate>
+      <label>Ismingiz (ixtiyoriy)<input name="name" autocomplete="name" maxlength="80" placeholder="Masalan, Aziz"></label>
+      <label>Telefon (ixtiyoriy — muammo bo'lsa bog'lanish uchun)<input name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="+998 90 123 45 67"></label>
+      <label class="ya-check"><input type="checkbox" name="agree" required> <span><a href="/alifbo/oferta" target="_blank" rel="noopener">Ommaviy oferta</a> shartlarini o'qidim va roziman</span></label>
+      <button class="btn btn-primary btn-lg btn-block" type="submit">Buyurtma berish</button>
+      <p class="form-msg" role="status"></p>
+    </form>
+
+    <div class="lead-form ya-order" id="orderBox" hidden>
+      <p class="ya-mute">Buyurtma raqami</p>
+      <p class="ya-no" id="oNo">—</p>
+      <div id="oNew">
+        <div id="oPayme" hidden>
+          <p>To'lov Payme orqali (karta, SMS kod). To'lovdan keyin shu sahifaga qaytasiz.</p>
+          <a class="btn btn-primary btn-lg btn-block" id="payBtn" href="#">Payme orqali to'lash</a>
+        </div>
+        <div id="oManual" hidden>
+          <p>Quyidagi rekvizitlarga <b id="oAmount">15 000 so'm</b> o'tkazing va izohga buyurtma raqamini yozing:</p>
+          <pre class="ya-req" id="oReq"></pre>
+          <button class="btn btn-primary btn-lg btn-block" id="paidBtn" type="button">To'ladim</button>
+          <p class="ya-mute" id="paidNote" hidden>Rahmat! To'lov tekshirilmoqda — odatda bir necha daqiqa. Sahifani yopmasangiz ham bo'ladi: dastur o'zi faollashadi.</p>
+        </div>
+      </div>
+      <div id="oPaid" hidden>
+        <p class="ya-ok">✓ To'lov qabul qilindi</p>
+        <p>Litsenziya kalitingiz:</p>
+        <p class="ya-key" id="oKey"></p>
+        <p id="oPaidPc">Buyurtma bergan kompyuterda dastur bir daqiqa ichida o'zi faollashadi.</p>
+        <p class="ya-mute">Boshqa holatda: Word → «Надстройки» → «Yangi Alifbo» → «Litsenziya» oynasiga kalitni kiriting.</p>
+      </div>
+      <div id="oCancel" hidden><p class="form-msg err">Buyurtma bekor qilingan. Savol bo'lsa, Telegram orqali yozing.</p><a class="btn btn-ghost btn-block" href="/alifbo/sotib-olish">Yangi buyurtma</a></div>
+      <p class="form-msg" id="oMsg" role="status"></p>
+    </div>
+  </div>
+</section>
+</main>
+<script type="module" src="/alifbo/sotib.js"></script>
+<footer class="foot">
+  <div class="brand"><span>Yangi Alifbo</span></div>
+  <nav aria-label="Yangi Alifbo">
+    <a href="/alifbo/">Dastur haqida</a>
+    <a href="/alifbo/sotib-olish">Sotib olish</a>
+    <a href="/alifbo/oferta">Ommaviy oferta</a>
+    <a href="/alifbo/yuklab/YangiAlifbo.msi">Yuklab olish (.msi)</a>
+  </nav>
+  <nav aria-label="DellPOS">
+    <a href="/">DellPOS — do&#x27;kon uchun dastur</a>
+    <a href="/savollar">Savollar</a>
+  </nav>
+  <small>© 2026 DEL COMPUTER SERVIZ · YaTT Raximov Xurshid Nematovich</small>
+</footer>
+</body>
+</html>

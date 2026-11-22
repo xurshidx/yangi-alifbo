@@ -97,11 +97,33 @@ namespace YangiAlifbo.Tests
                 var off3 = new LicenseService(Path.Combine(tmp, "pc3"), pub, "http://127.0.0.1:1", Reg + "3", "33333333333333333333333333333333");
                 Eq("Server bilan boğlanib bölmadi. Internetni tekşiring.", Throws(() => off3.Sync()), "server yo'q — tushunarli xato");
                 Eq("Trial", off3.State(out d), "server yo'q — sinov mahalliy hisoblanadi");
+
+                // v3.2.0: onlayn sotib olish — «Sotib oliş» → buyurtma → tasdiq → claim (dastur o'zi faollashadi)
+                const string PC4 = "44444444444444444444444444444444";
+                var L4 = new LicenseService(Path.Combine(tmp, "pc4"), pub, server, Reg + "4", PC4);
+                Eq(true, L4.BuyUrl.StartsWith("https://dellcom.uz/alifbo/sotib-olish.html?hw=" + PC4 + "&pc="), "sotib olish havolasi kompyuter ID bilan");
+                Eq(false, L4.BuyPending, "tugma bosilmagan — kutish yo'q");
+                L4.MarkBuyPending();
+                Eq(true, L4.BuyPending, "tugma bosildi — 24 soat kutiladi");
+                Eq(false, L4.Claim(), "buyurtma yo'q — claim false");
+                Http(server + "/api/admin/alifbo/shop", "{\"manualText\":\"Karta 8600 sinov\"}");
+                var od = MiniJson.Parse(Http(server + "/api/alifbo/order", "{\"agree\":true,\"hwid\":\"" + PC4 + "\",\"pc\":\"SINOV-PC\"}")) as Dictionary<string, object>;
+                string no = MiniJson.S(od, "no");
+                Eq(false, L4.Claim(), "to'lanmagan buyurtma — claim false (pending)");
+                Eq("Trial", L4.State(out d), "hali sinovda");
+                Http(server + "/api/admin/alifbo/confirm", MiniJson.Obj("no", no));
+                Eq(true, L4.Claim(), "to'lov tasdiqlandi — claim litsenziyani saqladi");
+                Eq("Licensed", L4.State(out d), "dastur o'zi faollashdi (kalit kiritilmadi)");
+                Eq(false, L4.BuyPending, "faollashgach kutish to'xtadi");
+                Eq(true, L4.LicensedKey.StartsWith("YA-"), "kalit saqlandi: " + L4.LicensedKey);
+                var L5 = new LicenseService(Path.Combine(tmp, "pc5"), pub, server, Reg + "5", "55555555555555555555555555555555");
+                Eq(false, L5.Claim(), "boshqa kompyuter shu buyurtmani ololmaydi");
+                Eq(true, Throws(() => L5.Activate(L4.LicensedKey)).StartsWith("Bu kalit boshqa kompyuterda"), "kalit ham boshqa kompyuterda ishlamaydi");
             }
             catch (Exception e) { fails++; Console.WriteLine("FAIL istisno: " + e); }
             finally
             {
-                try { foreach (string r in new[] { Reg, Reg + "2", Reg + "3" }) Registry.CurrentUser.DeleteSubKeyTree(r, false); } catch { }
+                try { foreach (string r in new[] { Reg, Reg + "2", Reg + "3", Reg + "4", Reg + "5" }) Registry.CurrentUser.DeleteSubKeyTree(r, false); } catch { }
                 try { Directory.Delete(tmp, true); } catch { }
             }
             Console.WriteLine("OK: " + passes + ", FAIL: " + fails);

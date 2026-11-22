@@ -1,8 +1,8 @@
-YANGI ALIFBO v3.1.0 — Word, Excel, PowerPoint qo'shimchasi + Windows'da avto-tuzatish
+YANGI ALIFBO v3.2.0 — Word, Excel, PowerPoint qo'shimchasi + Windows'da avto-tuzatish
 DELL COMPUTER SERVIZ
 
 O'RNATISH — ikki usuldan biri
-A) YangiAlifbo_v3.1.0.msi (tavsiya): ikki marta bosing → «Далее» → «Установить». Dastur «Программы и компоненты»
+A) YangiAlifbo_v3.2.0.msi (tavsiya): ikki marta bosing → «Далее» → «Установить». Dastur «Программы и компоненты»
    ro'yxatida chiqadi, o'sha yerdan o'chiriladi; yangi versiya eskisining ustidan o'rnatiladi. Barcha foydalanuvchilar uchun.
 B) YangiAlifbo.Setup.exe: Word, Excel va PowerPoint'ni yoping va ishga tushiring — Windows administrator ruxsatini so'raydi (UAC).
    Faqat joriy foydalanuvchi uchun. Ikkalasini bir vaqtda ishlatmang: Setup.exe bilan o'rnatilgan bo'lsa,
@@ -43,8 +43,10 @@ Diagnostika jurnali: %LOCALAPPDATA%\YangiAlifbo\log.txt
 
 LITSENZIYA
 7 kun bepul sinov (hamma narsa ishlaydi). Bitta kalit Office qo'shimchasini ham, avto-tuzatishni ham ochadi. Keyin litsenziya kaliti kerak: YA-XXXX-XXXX-XXXX.
-Bir martalik to'lov, 1 kompyuter, muddatsiz. Kalitni «Litsenziya» tugmasi orqali kiriting
-(birinchi faollashtirishda internet kerak, keyin internetsiz ishlaydi).
+Bir martalik to'lov, 1 kompyuter, muddatsiz.
+SOTIB OLISH: «Litsenziya» oynasida (Word → «Надстройки» yoki soat yonidagi «Ö» → «Litsenziya») «Sotib oliş» tugmasi —
+dellcom.uz/alifbo sahifasi ochiladi; to'lovdan keyin dastur shu kompyuterda O'ZI faollashadi (kalit kiritish shart emas).
+Kalitingiz bo'lsa — shu oynada kiriting (birinchi faollashtirishda internet kerak, keyin internetsiz ishlaydi).
 Yangi kompyuterga o'tsangiz — sotuvchiga murojaat qiling, u kalitni eski kompyuterdan ajratadi.
 
 O'CHIRISH

@@ -8,7 +8,7 @@ rem              build.cmd msi        - yig'ish + out\YangiAlifbo_v%VER%.msi (Wi
 rem   ICE38/43/57: Bosh menyu yorlig'i perMachine o'rnatishda (ALLUSERS=1) barcha foydalanuvchilarga — ICE buni bilmaydi; ICE61: AllowSameVersionUpgrades
 setlocal
 cd /d "%~dp0"
-set VER=3.1.0
+set VER=3.2.0
 set CSC=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\csc.exe
 set FW=%WINDIR%\Microsoft.NET\Framework\v4.0.30319
 if not exist "%CSC%" (
