@@ -1,9 +1,9 @@
-YANGI ALIFBO v1.0.0 — Word, Excel, PowerPoint uchun qo'shimcha
+YANGI ALIFBO v1.0.1 — Word, Excel, PowerPoint uchun qo'shimcha
 DELL COMPUTER SERVIZ
 
 O'RNATISH
 1. Word, Excel va PowerPoint'ni yoping.
-2. YangiAlifbo.Setup.exe ni ishga tushiring (administrator kerak emas).
+2. YangiAlifbo.Setup.exe ni ishga tushiring — Windows administrator ruxsatini so'raydi (UAC).
 3. Dasturlarni qayta oching — «Надстройки» (Add-ins) varag'ida «Yangi Alifbo» guruhi chiqadi.
 
 TUGMALAR
@@ -17,10 +17,10 @@ Word'da Ctrl+Z bilan bekor qilsa bo'ladi. Excel'da bekor qilib bo'lmaydi, shunin
 butun varaqni o'girishdan oldin tasdiq so'raladi.
 
 MUHIM
-Office «Administrator nomidan» ishga tushirilsa, Windows foydalanuvchi darajasidagi
-qo'shimchalarni yuklamaydi. Word/Excel/PowerPoint'ni oddiy usulda oching.
+Agar Office "«yangi alifbo» qo'shimchasida jiddiy xato... o'chirilsinmi?" deb so'rasa — «Нет / Yo'q».
 Agar qo'shimcha chiqmasa: YangiAlifbo.Setup.exe ni qayta ishga tushiring
 (u Office o'chirib qo'ygan qo'shimchani qayta yoqadi).
+Diagnostika jurnali: %LOCALAPPDATA%\YangiAlifbo\log.txt
 
 O'CHIRISH
 Buyruq satrida: YangiAlifbo.Setup.exe /uninstall

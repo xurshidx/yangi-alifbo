@@ -75,8 +75,8 @@ hisoblanib o'tkazib yuboriladi (Microsoft, Windows).
 
 ## 5. O'rnatish
 
-`YangiAlifbo.Setup.exe` (administrator kerak emas): fayllarni `%LOCALAPPDATA%\YangiAlifbo\`
-ga ko'chiradi, COM'ni HKCU da (32 va 64 ko'rinishda) ro'yxatdan o'tkazadi,
+`YangiAlifbo.Setup.exe` (**v1.0.1 dan administrator ruxsati kerak** — .NET shim HKCU dagi managed COM ni o'qimaydi): fayllarni `%ProgramFiles%\YangiAlifbo\`
+ga ko'chiradi, COM'ni HKLM da (32 va 64 ko'rinishda) ro'yxatdan o'tkazadi,
 Word/Excel/PowerPoint `Addins\YangiAlifbo.Connect` kalitlarini yozadi (LoadBehavior=3).
 `/uninstall` hammasini o'chiradi. Talab: .NET Framework 4.x (Windows 10 da bor).
 

@@ -22,7 +22,26 @@ namespace YangiAlifbo.Office
         public const string Title = "Yangi Alifbo";
         object app;
 
-        public void OnConnection(object application, int connectMode, object addInInst, ref Array custom) { app = application; }
+        public Connect() { Log("Connect yaratildi"); }
+
+        /// <summary>Diagnostika jurnali: %LOCALAPPDATA%\YangiAlifbo\log.txt</summary>
+        public static void Log(string msg)
+        {
+            try
+            {
+                string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "YangiAlifbo");
+                Directory.CreateDirectory(dir);
+                File.AppendAllText(Path.Combine(dir, "log.txt"),
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " [" + System.Diagnostics.Process.GetCurrentProcess().ProcessName + "] " + msg + Environment.NewLine);
+            }
+            catch { }
+        }
+
+        public void OnConnection(object application, int connectMode, object addInInst, ref Array custom)
+        {
+            app = application;
+            Log("OnConnection mode=" + connectMode);
+        }
         public void OnDisconnection(int removeMode, ref Array custom) { app = null; }
         public void OnAddInsUpdate(ref Array custom) { }
         public void OnStartupComplete(ref Array custom) { }
@@ -30,9 +49,21 @@ namespace YangiAlifbo.Office
 
         public string GetCustomUI(string ribbonId)
         {
-            using (var s = Assembly.GetExecutingAssembly().GetManifestResourceStream("YangiAlifbo.Office.Ribbon.xml"))
-            using (var r = new StreamReader(s))
-                return r.ReadToEnd();
+            try
+            {
+                using (var s = Assembly.GetExecutingAssembly().GetManifestResourceStream("YangiAlifbo.Office.Ribbon.xml"))
+                using (var r = new StreamReader(s))
+                {
+                    string xml = r.ReadToEnd();
+                    Log("GetCustomUI id=" + ribbonId + " len=" + xml.Length);
+                    return xml;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("GetCustomUI XATO: " + ex);
+                return null;
+            }
         }
 
         /// <summary>Hozirgi Office dasturi uchun o'giruvchi (Word/Excel/PowerPoint), boshqasi uchun null.</summary>
@@ -71,6 +102,7 @@ namespace YangiAlifbo.Office
             }
             catch (Exception ex)
             {
+                Log("OnButton XATO: " + ex);
                 MessageBox.Show("Xatolik: " + ex.Message, Title, MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
