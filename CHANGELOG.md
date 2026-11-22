@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## v3.0.0 — 2026-11-22 (Windows'da yozayotganda avto-tuzatish)
+- Yangi `YangiAlifbo.exe` — treydagi «Ö» belgisi: istalgan dasturda eski lotin (o', g', sh, ch) so'z tugaganda yangi lotinga almashadi
+- Pause — yoqish/o'chirish; Backspace — oxirgi almashtirishni qaytarish va so'zni istisnoga qo'shish (`%APPDATA%\YangiAlifbo\avto_istisno.txt`)
+- Himoya: Enter/Tab faqat qatorda oldin bo'sh joy bo'lsa (login/parol), Win32 parol maydonlari, raqam/@/manzilli bo'laklar, tegilmaydigan dasturlar (`avto_dasturlar.txt`), chet so'zlar ro'yxati
+- Litsenziya Office qo'shimchasi bilan umumiy (bitta kalit); Setup avtoyuklashni (HKCU Run) yozadi va dasturni oddiy huquqda ishga tushiradi
+- Tuzatish: so'z oxiridagi o'/g' (tog', bog', o') endi o'giriladi — Office tugmalarida ham
+- Testlar: CoreTests 130 (Windows + mono), `tests/avto_sinov.ps1` — Bloknotda haqiqiy klaviatura sinovi 6/6; ESET Smart Security skani — toza
+
 ## v2.0.0 — 2026-11-22 (litsenziya)
 - 7 kunlik bepul sinov; litsenziya kaliti YA-XXXX-XXXX-XXXX (Boshqaruv markazi, dell-platform v2.11.0 / server 4.32.0); bir martalik, 1 kompyuter, muddatsiz
 - Lentada «Litsenziya» tugmasi va oyna: holat, kalit kiritish, narx, Telegram orqali sotib olish

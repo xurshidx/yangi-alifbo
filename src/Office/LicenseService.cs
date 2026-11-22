@@ -21,7 +21,7 @@ namespace YangiAlifbo.Office
     public class LicenseService
     {
         public const string DefaultServer = "https://pos.dellcom.uz";
-        public const string Version = "2.0.0";
+        public const string Version = "3.0.0";
         const int CheckEveryDays = 7;
 
         readonly string dir;

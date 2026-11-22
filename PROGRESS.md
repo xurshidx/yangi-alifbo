@@ -34,3 +34,21 @@ Topshiriq: `docs/spec-v1.md` · Reja: `docs/plans/2026-11-22-v1-office-qoshimcha
 | Qo'shimcha: LicenseService, LicenseForm, «Litsenziya» tugmasi | ✅ | LicenseSmoke 26/26 (Windows), ServerCheck — haqiqiy server OK |
 | O'rnatildi (Office 2007) | ✅ | Word: 5 ta tugma (egasi ko'rdi), fonda sinov sanasi serverdan |
 | Haqiqiy kalit bilan faollashtirish (Markaz → Word) | ⏳ egasi bilan | |
+
+## v3.0.0 — Windows'da avto-tuzatish (22.11.2026)
+Topshiriq: `docs/spec-v3-avto.md` (egasi tasdiqladi: yozayotganda avto, bitta kalit, Pause, nomi «Yangi Alifbo»).
+
+| # | Bosqich | Holat | Tekshiruv |
+|---|---|---|---|
+| 1 | AutoEngine (yadro) + Tokenizer tuzatishi (oxirgi o'/g') | bajarildi | CoreTests 130/130 (mono va Windows) |
+| 2 | YangiAlifbo.exe: hook, SendInput, Pause, istisnolar, litsenziya | bajarildi | avto_sinov.ps1 — Bloknot 6/6 (Windows 10 19043) |
+| 3 | Setup: exe, HKCU Run, oddiy huquqda ishga tushirish | bajarildi | kompilyatsiya; o'rnatish — egasida |
+| 4 | Antivirus | bajarildi | ESET Smart Security (ecls) — 0 tahdid |
+| 5 | Qo'lda: Telegram Desktop, Chrome, Word 2007, o'rnatish/o'chirish | ⏳ egasida | docs/test-checklist-v3.md |
+
+### Qarorlar
+- 2026-11-22: sozlamalar JSON emas, matn fayllari (`avto_istisno.txt`, `avto_dasturlar.txt`) + registr `AvtoEnabled`
+- 2026-11-22: Enter/Tab himoyasi har qator/maydonda qayta yoqiladi («Ism Familiya» Tab «parol» Enter sinovida topilgan xato)
+- 2026-11-22: boshqa dasturlarning sun'iy tugmalari (KeePass avto-kiritish va h.k.) qayta ishlanmaydi; o'zimiz yuborganlar `dwExtraInfo` belgisi bilan ajratiladi.
+  Sinov rejimi `HKCU\Software\YangiAlifbo\AvtoTestInjected=1` (faqat avto_sinov.ps1 uchun, oxirida o'chiriladi)
+- 2026-11-22: PowerShell `SendKeys` journal playback ishlatadi — LL hook uni ko'rmaydi; sinov `SendInput` + VK kodlar bilan

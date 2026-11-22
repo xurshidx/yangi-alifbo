@@ -17,6 +17,11 @@ namespace YangiAlifbo.Core
             return c == '\'' || c == '`' || c == 'ʻ' || c == 'ʼ' || c == '‘' || c == '’';
         }
 
+        static bool IsOG(char c)
+        {
+            return c == 'o' || c == 'O' || c == 'g' || c == 'G';
+        }
+
         /// <summary>
         /// Matnni so'zlarga ajratadi: harflar ketma-ketligi; apostrof faqat
         /// ikki harf orasida bo'lsa so'z ichida hisoblanadi.
@@ -36,6 +41,8 @@ namespace YangiAlifbo.Core
                 {
                     if (char.IsLetter(text[i])) { i++; continue; }
                     if (IsApostrophe(text[i]) && i + 1 < n && char.IsLetter(text[i + 1])) { i += 2; continue; }
+                    // v3.0.0: so'z oxiridagi o' / g' (tog', bog', o') — apostrof so'zga kiradi
+                    if (IsApostrophe(text[i]) && IsOG(text[i - 1]) && (i + 1 >= n || !char.IsLetter(text[i + 1]))) { i++; }
                     break;
                 }
                 Token t;

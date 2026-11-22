@@ -33,6 +33,25 @@ namespace YangiAlifbo.Tests
             Eq(expected, Converter.ConvertText(input, d), d + ": " + input);
         }
 
+        /// <summary>Klaviatura simulyatsiyasi: \n = Enter, \t = Tab, \b = Backspace. Oxirgi o'zgarish: "bo'lak|1|yangi|o'chirish" yoki "bo'lak|0".</summary>
+        static string Type(string keys)
+        {
+            var en = new AutoEngine();
+            string res = "|0";
+            foreach (char c in keys)
+            {
+                string before = en.Chunk;
+                AutoAction a;
+                if (c == ' ') a = en.End(Ender.Space);
+                else if (c == '\n') a = en.End(Ender.Enter);
+                else if (c == '\t') a = en.End(Ender.Tab);
+                else if (c == '\b') { en.Backspace(); continue; }
+                else { en.Char(c); continue; }
+                res = a.Kind == AutoKind.Replace ? before + "|1|" + a.Text + "|" + a.Backspaces : before + "|0";
+            }
+            return res;
+        }
+
         public static int Main()
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -162,6 +181,49 @@ namespace YangiAlifbo.Tests
             Eq("active|15000|True||a|b\u00f6|2|Kalit \"topilmadi\"\n", js["status"] + "|" + js["price"] + "|" + js["ok"] + "|" + js["n"] + "|" + ((System.Collections.Generic.Dictionary<string, object>)js["license"])["payload"] + "|" + ((System.Collections.Generic.List<object>)js["arr"]).Count + "|" + js["msg"], "json_parse");
             Eq("{\"key\":\"a\\\"b\",\"n\":\"\\u00f6\\n\"}", MiniJson.Obj("key", "a\"b", "n", "\u00f6\n"), "json_obj");
             Eq("null", (MiniJson.Parse("{bad") == null ? "null" : "x"), "json_bad");
+
+
+            // v3.0.0: so'z oxiridagi o' / g'
+            Conv(o, "tog'", "toğ");
+            Conv(o, "Bog', tog' va o' ", "Boğ, toğ va ö ");
+            Conv(o, "'salom'", "'salom'");
+            Conv(l, "tog'", "тоғ");
+            Conv(k, "тоғ", "toğ");
+
+            // v3.0.0: avto-tuzatish mantiqi (AutoEngine)
+            Eq("o'zbek|1|özbek|6", Type("o'zbek "), "auto_basic");
+            Eq("bog',|1|boğ,|5", Type("bog', "), "auto_comma_final_g");
+            Eq("Shahar|1|Şahar|6", Type("Shahar "), "auto_case");
+            Eq("salom|0", Type("salom "), "auto_nochange");
+            Eq("chat|0", Type("chat "), "auto_builtin_exc");
+            Eq("Windows|0", Type("Windows "), "auto_foreign");
+            Eq("shoh.uz|0", Type("shoh.uz "), "auto_domain");
+            Eq("shoh@mail.ru|0", Type("shoh@mail.ru "), "auto_email");
+            Eq("ash12|0", Type("ash12 "), "auto_digits");
+            Eq("шаҳар|0", Type("шаҳар "), "auto_cyr");
+            Eq("ashot|0", Type("ashot\n"), "auto_enter_first_word_password_guard");
+            Eq("choy|1|çoy|4", Type("salom choy\n"), "auto_enter_after_space");
+            Eq("ashot|0", Type("salom choy\nashot\n"), "auto_enter_guard_resets_after_enter");
+            Eq("ashot|0", Type("Ali Valiyev\tashot\n"), "auto_tab_then_password");
+            Eq("kosh|1|koş|4", Type("kosx\bh "), "auto_backspace_inside");
+            Eq("|0", Type("ab \b\bsh "), "auto_backspace_into_prev_chunk");
+            {
+                var en = new AutoEngine(); string added = "";
+                en.ExceptionAdded = w => added = w;
+                foreach (char c in "shopa") en.Char(c);
+                var r = en.End(Ender.Space);
+                Eq("Replace|6", r.Kind + "|" + (r.Backspaces + 1), "auto_undo_pre");
+                var u = en.Backspace();
+                Eq("Undo|5|shopa|shopa", u.Kind + "|" + u.Backspaces + "|" + u.Text + "|" + added, "auto_undo");
+                foreach (char c in "shopa") en.Char(c);
+                Eq("None", en.End(Ender.Space).Kind.ToString(), "auto_undo_remembered");
+                foreach (char c in "bog'") en.Char(c);
+                en.End(Ender.Space); en.Backspace();
+                Eq("True", en.IsException("bog").ToString(), "auto_undo_trailing_apos");
+                foreach (char c in "choy") en.Char(c);
+                en.End(Ender.Space); en.Char('x');
+                Eq("None", en.Backspace().Kind.ToString(), "auto_no_undo_after_typing");
+            }
 
             Console.WriteLine("OK: " + passes + ", FAIL: " + fails);
             return fails == 0 ? 0 : 1;
