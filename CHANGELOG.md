@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## v3.2.1 — 2026-11-24 (DNS nosozligida ham faollashtirish)
+- Server nomi (pos.dellcom.uz) DNS da topilmasa, dastur serverga IP (37.140.216.54) orqali ulanadi; TLS sertifikati baribir pos.dellcom.uz nomi bo'yicha tekshiriladi. hosts fayliga tegilmaydi
+- Office qo'shimchasi ham, «Ö» fon dasturi ham (faollashtirish, sinov, haftalik tekshiruv, onlayn sotib olish) shu yo'ldan foydalanadi
+- Jurnalga yoziladi: «Server: DNS ... ni topmadi, IP ... orqali ulanildi»
+- Testlar: ServerCheck +4, CoreTests 130, LicenseSmoke 38; ESET — toza
+
 ## v3.2.0 — 2026-11-23 (onlayn sotib olish, dastur o'zi faollashadi)
 - Litsenziya oynasida «Sotib oliş» tugmasi: `https://dellcom.uz/alifbo/sotib-olish.html?hw=<kompyuter ID>&pc=<nom>&v=<versiya>`
   (registr `HKCU\Software\YangiAlifbo\Shop` bilan almashtiriladi); oyna ochiq bo'lsa har 5 s, «Ö» esa 24 soat davomida har daqiqada `POST /api/alifbo/claim` —

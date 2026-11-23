@@ -84,3 +84,19 @@ Topshiriq: `docs/spec-v2.1-tolov.md` (egasi tasdiqladi). Server tomoni — dell-
 ### Qarorlar
 - 2026-11-23: sahifa API'ni o'z domenidan chaqiradi (dellcom.uz nginx → `/api/alifbo/`), CORS ochilmaydi
 - 2026-11-23: buyurtmada kompyuter ID bo'lsa kalit to'lov paytida shu kompyuterga bog'lanadi; dastur `claim` bilan oladi
+
+## v3.2.1 — DNS ishlamasa IP orqali ulanish (24.11.2026)
+Sabab: egasining kompyuterida kalitni faollashtirishda «Server bilan bog'lanib bo'lmadi». Tekshiruv: dellcom.uz ning ikkinchi nom serveri
+`revers.hostmaster.uz` zonani sinxron bermayapti — `pos`/`markaz` uchun NXDOMAIN, `dellcom.uz` → 91.213.99.91; `ns2.hostmaster.uz` to'g'ri (37.140.216.54).
+Router (192.168.1.1) NXDOMAIN ni keshlagan. Asosiy tuzatish — hostmaster.uz panelida (egasida).
+
+| # | Bosqich | Holat | Tekshiruv |
+|---|---|---|---|
+| 1 | `IpFallback` (TcpClient + SslStream, SNI/sertifikat — pos.dellcom.uz), `Post` NameResolutionFailure da unga o'tadi | bajarildi | ServerCheck: IP orqali 200, begona nom rad etildi (AuthenticationException), DNS taqlidida activate/sync — OK |
+| 2 | Regressiya | bajarildi | CoreTests 130/130, LicenseSmoke 38/38 (testserver), ServerCheck OK (Windows 10) |
+| 3 | Paket | bajarildi | build.cmd release — YangiAlifbo_v3.2.1.msi/.zip; ESET ecls — 0 tahdid |
+| 4 | O'rnatish egasining kompyuterida, hosts qatorisiz sinov | ⏳ egasida | |
+
+### Qarorlar
+- 2026-11-24: hosts fayliga yozilmaydi (antivirus HostsFileHijack deb bloklaydi, admin kerak, IP o'zgarsa qotib qoladi) — dastur ichida zaxira yo'l
+- Zaxira faqat standart server (pos.dellcom.uz, Server registr almashtirilmagan) uchun; IP `HKCU\Software\YangiAlifbo\ServerIp` bilan almashtiriladi
