@@ -23,7 +23,7 @@ namespace YangiAlifbo.Office
         public const string DefaultServer = "https://pos.dellcom.uz";
         public const string DefaultShop = "https://dellcom.uz/alifbo/sotib-olish.html";
         const int BuyPendingHours = 24;
-        public const string Version = "3.2.0";
+        public const string Version = "3.2.1";
         const int CheckEveryDays = 7;
 
         readonly string dir;
@@ -209,6 +209,7 @@ namespace YangiAlifbo.Office
             req.ReadWriteTimeout = timeoutMs;
             byte[] body = Encoding.UTF8.GetBytes(json);
             req.ContentLength = body.Length;
+            if (SimulateDnsFailure) return PostViaIp(path, body, timeoutMs, new WebException("sinov: DNS xatosi", WebExceptionStatus.NameResolutionFailure));
             string text;
             try
             {
@@ -219,6 +220,8 @@ namespace YangiAlifbo.Office
             catch (WebException e)
             {
                 var resp = e.Response as HttpWebResponse;
+                if (resp == null && e.Status == WebExceptionStatus.NameResolutionFailure)
+                    return PostViaIp(path, body, timeoutMs, e);
                 if (resp == null) throw new ServerError("Server bilan boğlanib bölmadi. Internetni tekşiring.");
                 using (resp)
                 using (var r = new StreamReader(resp.GetResponseStream(), Encoding.UTF8)) text = r.ReadToEnd();
@@ -227,6 +230,57 @@ namespace YangiAlifbo.Office
                 throw new ServerError(m.Length > 0 ? m : "Server xatosi " + (int)resp.StatusCode + ".");
             }
             var d = MiniJson.Parse(text) as Dictionary<string, object>;
+            if (d == null) throw new ServerError("Serverdan notöğri javob keldi.");
+            return d;
+        }
+
+        // ---------- v3.2.1: DNS ishlamasa — IP orqali (hosts fayliga tegmasdan) ----------
+        /// <summary>Standart server IP manzili. Registr HKCU\Software\YangiAlifbo\ServerIp bilan almashtiriladi.</summary>
+        public const string DefaultServerIp = "37.140.216.54";
+
+        /// <summary>Faqat testlar uchun (ServerCheck): DNS xatosini taqlid qiladi — so'rov darhol IP yo'liga o'tadi.</summary>
+        public static bool SimulateDnsFailure;
+
+        public static string ServerIp
+        {
+            get
+            {
+                try
+                {
+                    using (var k = Registry.CurrentUser.OpenSubKey(@"Software\YangiAlifbo"))
+                    {
+                        string s = k == null ? null : k.GetValue("ServerIp") as string;
+                        if (!string.IsNullOrEmpty(s)) return s.Trim();
+                    }
+                }
+                catch { }
+                return DefaultServerIp;
+            }
+        }
+
+        Dictionary<string, object> PostViaIp(string path, byte[] body, int timeoutMs, WebException original)
+        {
+            Uri u = new Uri(Server);
+            string ip = serverOverride == null && u.Host == new Uri(DefaultServer).Host ? ServerIp : null;
+            if (ip == null || u.Scheme != "https") throw new ServerError("Server bilan boğlanib bölmadi. Internetni tekşiring.");
+            string text;
+            int status;
+            try
+            {
+                text = IpFallback.Post(ip, u.Port, u.Host, path, body, "YangiAlifbo/" + Version, timeoutMs, out status);
+                Connect.Log("Server: DNS " + u.Host + " ni topmadi, IP " + ip + " orqali ulanildi (" + status + ")");
+            }
+            catch (Exception e)
+            {
+                Connect.Log("Server: DNS xatosi (" + original.Message + "), IP " + ip + " ham ishlamadi: " + e.Message);
+                throw new ServerError("Server bilan boğlanib bölmadi. Internetni tekşiring.");
+            }
+            var d = MiniJson.Parse(text) as Dictionary<string, object>;
+            if (status >= 400)
+            {
+                string m = MiniJson.S(d, "error");
+                throw new ServerError(m.Length > 0 ? m : "Server xatosi " + status + ".");
+            }
             if (d == null) throw new ServerError("Serverdan notöğri javob keldi.");
             return d;
         }

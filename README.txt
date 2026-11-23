@@ -1,8 +1,8 @@
-YANGI ALIFBO v3.2.0 — Word, Excel, PowerPoint qo'shimchasi + Windows'da avto-tuzatish
+YANGI ALIFBO v3.2.1 — Word, Excel, PowerPoint qo'shimchasi + Windows'da avto-tuzatish
 DELL COMPUTER SERVIZ
 
 O'RNATISH — ikki usuldan biri
-A) YangiAlifbo_v3.2.0.msi (tavsiya): ikki marta bosing → «Далее» → «Установить». Dastur «Программы и компоненты»
+A) YangiAlifbo_v3.2.1.msi (tavsiya): ikki marta bosing → «Далее» → «Установить». Dastur «Программы и компоненты»
    ro'yxatida chiqadi, o'sha yerdan o'chiriladi; yangi versiya eskisining ustidan o'rnatiladi. Barcha foydalanuvchilar uchun.
 B) YangiAlifbo.Setup.exe: Word, Excel va PowerPoint'ni yoping va ishga tushiring — Windows administrator ruxsatini so'raydi (UAC).
    Faqat joriy foydalanuvchi uchun. Ikkalasini bir vaqtda ishlatmang: Setup.exe bilan o'rnatilgan bo'lsa,

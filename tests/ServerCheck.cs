@@ -26,6 +26,33 @@ namespace YangiAlifbo.Tests
                 Console.WriteLine("ok   sinov: " + L.State(out d) + ", " + d + " kun; narx " + L.Price + "; telegram '" + L.Telegram + "'");
                 try { L.Activate("YA-AAAA-AAAA-AAAA"); Console.WriteLine("FAIL noto'g'ri kalit qabul qilindi"); fails++; }
                 catch (LicenseService.ServerError e) { Console.WriteLine((e.Message.StartsWith("Kalit topilmadi") ? "ok   " : "FAIL ") + "noto'g'ri kalit: " + e.Message); if (!e.Message.StartsWith("Kalit topilmadi")) fails++; }
+                // v3.2.1: DNS ishlamagan holat — IP orqali (sertifikat pos.dellcom.uz bo'yicha tekshiriladi)
+                int st;
+                byte[] bad = Encoding.UTF8.GetBytes("{\"key\":\"YA-AAAA-AAAA-AAAA\",\"hwid\":\"" + L.MyHwid + "\",\"version\":\"sinov\"}");
+                string host = new Uri(LicenseService.DefaultServer).Host;
+                try
+                {
+                    string t = IpFallback.Post(LicenseService.DefaultServerIp, 443, host, "/api/alifbo/check", bad, "YangiAlifbo/sinov", 15000, out st);
+                    bool okIp = st >= 200 && st < 500 && t.TrimStart().StartsWith("{");
+                    Console.WriteLine((okIp ? "ok   " : "FAIL ") + "IP orqali " + LicenseService.DefaultServerIp + " (" + host + "): " + st + " " + t);
+                    if (!okIp) fails++;
+                }
+                catch (Exception e) { fails++; Console.WriteLine("FAIL IP orqali ulanish: " + e.Message); }
+                try
+                {
+                    IpFallback.Post(LicenseService.DefaultServerIp, 443, "example.com", "/api/alifbo/check", bad, "YangiAlifbo/sinov", 15000, out st);
+                    fails++; Console.WriteLine("FAIL begona nom (example.com) sertifikati qabul qilindi");
+                }
+                catch (Exception e) { Console.WriteLine("ok   begona nom rad etildi: " + e.GetType().Name); }
+                LicenseService.SimulateDnsFailure = true;
+                try
+                {
+                    try { L.Activate("YA-AAAA-AAAA-AAAA"); Console.WriteLine("FAIL (DNS yo'q) noto'g'ri kalit qabul qilindi"); fails++; }
+                    catch (LicenseService.ServerError e) { bool k = e.Message.StartsWith("Kalit topilmadi"); Console.WriteLine((k ? "ok   " : "FAIL ") + "DNS yo'q, IP orqali faollashtirish javobi: " + e.Message); if (!k) fails++; }
+                    L.Sync();
+                    Console.WriteLine("ok   DNS yo'q, IP orqali sinxron: " + L.State(out d));
+                }
+                finally { LicenseService.SimulateDnsFailure = false; }
                 if (args.Length > 0)
                 {
                     L.Activate(args[0]);
